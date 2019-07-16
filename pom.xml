@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.6.RELEASE</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+  <groupId>com.lemon</groupId>
+  <artifactId>spring-docker</artifactId>
+  <version>1.0</version>
+  <name>spring-docker</name>
+  <description>Demo project for Spring Boot</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>1.8</java.version>
+    <docker.image.prefix>springio</docker.image.prefix>
+    <dockerfile-maven-version>1.4.10</dockerfile-maven-version>
+    <docker.repostory>registry.cn-hangzhou.aliyuncs.com</docker.repostory>
+    <docker.registry.name>alili</docker.registry.name>
+    <imageVersion>latest</imageVersion>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>spring-docker</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <!-- https://mvnrepository.com/artifact/com.spotify/dockerfile-maven-plugin -->
+        <groupId>com.spotify</groupId>
+        <artifactId>dockerfile-maven-plugin</artifactId>
+        <version>${dockerfile-maven-version}</version>
+        <executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>build</goal>
+              <goal>push</goal>
+            </goals>
+          </execution>
+
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>tag-latest</id>-->
+<!--            <phase>deploy</phase>-->
+<!--            <goals>-->
+<!--              <goal>build</goal>-->
+<!--              <goal>tag</goal>-->
+<!--              <goal>push</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <tag>latest</tag>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--          <execution>-->
+<!--            <id>tag-version</id>-->
+<!--            <phase>deploy</phase>-->
+<!--            <goals>-->
+<!--              <goal>build</goal>-->
+<!--              <goal>tag</goal>-->
+<!--              <goal>push</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <tag>${project.version}</tag>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+
+        </executions>
+        <configuration>
+<!--          <buildDirectory>${project.basedir}/target</buildDirectory>-->
+<!--       上下文路径配置,此处设置为项目根路径-->
+<!--          <contextDirectory>${project.basedir}</contextDirectory>-->
+
+<!--          <username>阿里云账号名</username>-->
+          <!--在容器镜像服务控制台"设置Registry登录密码"-->
+<!--          <password>Registry登录密码</password>-->
+          <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+          <repository>${docker.repostory}/${docker.registry.name}/${project.artifactId}</repository>
+          <tag>${imageVersion}</tag>
+<!--          作为Dockerfile文件传入-->
+          <buildArgs>
+            <JAR_FILE>${project.artifactId}.jar</JAR_FILE>
+          </buildArgs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
